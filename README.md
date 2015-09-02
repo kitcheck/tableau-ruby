@@ -46,9 +46,9 @@ end
 	admin_password: 'your-admin-password'
 )
 
-@site = JSON.parse(@client.sites.find_by(name: 'Default'))['site']
+@site = @client.sites.find_by(name: 'Default')['site']
 
-@user = Tableau::User.new(@client, JSON.parse(@client.users.find_by(site_id: @site['id'], name: 'user-name'))['user'])
+@user = Tableau::User.new(@client, @client.users.find_by(site_id: @site['id'], name: 'user-name')['user'])
 @user.workbooks
 
 ```

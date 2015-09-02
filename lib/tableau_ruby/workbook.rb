@@ -134,7 +134,7 @@ BODY
       data[:image] = Base64.encode64(resp.body)
       data[:image_mime_type] = "image/png"
 
-      data.to_json
+      data
     end
 
     private

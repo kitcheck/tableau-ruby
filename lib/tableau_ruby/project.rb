@@ -24,7 +24,7 @@ module Tableau
 
     def create(project)
       site_id = project[:site_id] || @client.site_id
-      return { error: "name is missing." }.to_json unless project[:name]
+      return { error: "name is missing." } unless project[:name]
 
       builder = Nokogiri::XML::Builder.new do |xml|
         xml.tsRequest do
@@ -48,8 +48,8 @@ module Tableau
     end
 
     def update(project)
-      return { error: "site_id is missing." }.to_json unless project[:site_id]
-      return { error: "name is missing." }.to_json unless project[:name]
+      return { error: "site_id is missing." } unless project[:site_id]
+      return { error: "name is missing." } unless project[:name]
 
       builder = Nokogiri::XML::Builder.new do |xml|
         xml.tsRequest do
@@ -65,9 +65,9 @@ module Tableau
         req.headers['X-Tableau-Auth'] = @client.token if @client.token
       end
       if resp.status == 200
-        {project: resp.body}.to_json
+        {project: resp.body}
       else
-        {error: resp.status}.to_json
+        {error: resp.status}
       end
     end
 

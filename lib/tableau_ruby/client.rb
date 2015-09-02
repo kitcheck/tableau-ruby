@@ -18,7 +18,7 @@ module Tableau
 
       setup_subresources
 
-      @user = Tableau::User.new(self, JSON.parse(@users.find_by(site_id: @site_id, name: args[:user_name]))['user']) if args.include? :user_name
+      @user = Tableau::User.new(self, @users.find_by(site_id: @site_id, name: args[:user_name])['user']) if args.include? :user_name
     end
 
     def inspect
