@@ -24,7 +24,6 @@ module Tableau
 
     def create(project)
       site_id = project[:site_id] || @client.site_id
-
       return { error: "name is missing." }.to_json unless project[:name]
 
       builder = Nokogiri::XML::Builder.new do |xml|

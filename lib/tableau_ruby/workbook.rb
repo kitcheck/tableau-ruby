@@ -21,7 +21,7 @@ module Tableau
       builder = Nokogiri::XML::Builder.new do |xml|
         xml.tsRequest do
           xml.workbook(name: workbook_file.gsub(".twb", "")) do
-            xml.connectionCredentials(name: db_user, password: db_pass)
+            xml.connectionCredentials(name: db_user, password: db_pass) if !db_user.nil? && !db_pass.nil?
             xml.project(id: params[:project_id])
           end
         end
@@ -54,7 +54,7 @@ BODY
      
       raise resp.body if resp.status > 299
 
-      puts resp.body
+      return resp.status
     end
 
     def all(params={})
