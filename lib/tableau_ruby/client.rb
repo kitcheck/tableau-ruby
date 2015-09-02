@@ -2,14 +2,14 @@ require 'logger'
 
 module Tableau
   class Client
-    attr_reader :conn, :host, :admin_name, :projects, :sites, :site_id, :site_name, :token, :user, :users, :workbooks
+    attr_reader :conn, :host, :admin_name, :projects, :sites, :site_id, :content_url, :token, :user, :users, :workbooks
 
     #{username, user_id, password, site}
     def initialize(args={})
       @host = args[:host] || Tableau.host
       @admin_name = args[:admin_name] || Tableau.admin_name
       @admin_password = args[:admin_password] || Tableau.admin_password
-      @site_name = args[:site_name] || "Default"
+      @content_url = args[:content_url] || ""
 
       setup_connection
 
@@ -22,7 +22,7 @@ module Tableau
     end
 
     def inspect
-      "<Tableau::Client @host=#{@host} @admin_name=#{@admin_name} @site_name=#{@site_name} @site_id=#{@site_id} @user=#{@user}>"
+      "<Tableau::Client @host=#{@host} @admin_name=#{@admin_name} @content_url=#{@content_url} @site_id=#{@site_id} @user=#{@user}>"
     end
 
     ##
@@ -71,7 +71,7 @@ module Tableau
         xml.tsRequest do
           xml.credentials(name: @admin_name, password: @admin_password) do
             xml.user(name: user) if user
-            xml.site(contentUrl: (!@site_name.nil? ? @site_name : ""))
+            xml.site(contentUrl: @content_url)
           end
         end
       end
@@ -89,8 +89,8 @@ module Tableau
     end
 
     def get_site_id
-      resp = @conn.get "/api/2.0/sites/#{@site_name.gsub(' ', '%20')}" do |req|
-        req.params['key'] = 'name'
+      resp = @conn.get "/api/2.0/sites/#{@content_url}" do |req|
+        req.params['key'] = 'contentUrl'
         req.headers['X-Tableau-Auth'] = @token if @token
       end
 

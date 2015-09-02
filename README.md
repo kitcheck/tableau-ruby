@@ -33,7 +33,7 @@ Tableau.configure do |config|
 	config.admin_password = 'your-admin-password'
 	# Optional
 	config.user_name = 'user-to-act-on-behalf-of'
-	config.site_name = 'defaults-to-Default'
+	config.content_url = 'defaults-to-empty-string'
 end
 
 @client = Tableau::Client.new
