@@ -7,11 +7,36 @@ module Tableau
       @client = client
     end
 
-    def all(params={})
-      # return { error: "site_id is missing." }.to_json if params[:site_id].nil? || params[:site_id].empty?
-      site_id = params[:site_id] || @client.site_id
+    def create(options)
+      site_id = options[:site_id] || @client.site_id
 
-      resp = @client.conn.get "/api/2.0/sites/#{site_id}/users" do |req|
+      return { error: "name is missing." }.to_json unless options[:name]
+
+      builder = Nokogiri::XML::Builder.new do |xml|
+        xml.tsRequest do
+          xml.user(
+            name: options[:name],
+            siteRole: "Interactor"
+          )
+        end
+      end
+
+      resp = @client.conn.post "/api/2.0/sites/#{site_id}/users" do |req|
+        req.body = builder.to_xml
+        req.headers['X-Tableau-Auth'] = @client.token if @client.token
+      end
+
+      raise resp.body if resp.status > 299
+
+      Nokogiri::XML(resp.body).css("tsResponse user").each do |s|
+        return s["id"]
+      end
+    end
+
+    def all(params={})
+      site_id = @client.site_id
+
+      resp = @client.conn.get "/api/2.0/sites/#{site_id}/users?pageSize=#{params["page-size"]}" do |req|
         req.headers['X-Tableau-Auth'] = @client.token if @client.token
       end
 
@@ -20,7 +45,7 @@ module Tableau
         data[:users] << {
           id: u['id'],
           name: u['name'],
-          site_id: params[:site_id],
+          site_id: site_id,
           role: u['role'],
           publish: u['publish'],
           content_admin: u['contentAdmin'],
@@ -28,61 +53,25 @@ module Tableau
           external_auth_user_id: u['externalAuthUserId']
         }
       end
-      data.to_json
+      data
     end
 
-    def find_by(user)
-      site_id = user[:site_id] || @client.site_id
+    def find_by(params={})
+      params.update({"page-size" => 1000})
 
-      return { error: "site_id is missing." }.to_json if site_id.nil?
-      return { error: "user_id is missing." }.to_json if user.nil? || user.empty?
+      #BUG: if you have more than 1000 users, you wont find your users
+      #needs pagination support
+      all_users = all(params)[:users]
 
-      resp = @client.conn.get "/api/2.0/sites/#{site_id}/users" do |req|
-        req.headers['X-Tableau-Auth'] = @client.token if @client.token
-      end
-      normalize_json(resp.body, site_id, user[:name])
-    end
-
-    def create(user)
-      return { error: "name is missing." }.to_json unless user[:name]
-
-      builder = Nokogiri::XML::Builder.new do |xml|
-        xml.tsRequest do
-          xml.user(
-            name: user[:name] || 'New User',
-            role: user[:role] || true,
-            publish: user[:publish] || true,
-            contentAdmin: user[:content_admin] || false,
-            suppressGettingStarted: user[:storage_quota] || false
-          )
-        end
-      end
-
-      resp = @client.conn.post "/api/2.0/sites/#{user[:site_id]}/users" do |req|
-        req.body = builder.to_xml
-        req.headers['X-Tableau-Auth'] = @client.token if @client.token
-      end
-      if resp.status == 201
-        normalize_json(resp.body, user[:site_id])
+      if params[:id]
+        return all_users.select {|u| u[:id] == params[:id] }.first
+      elsif params[:name]
+        return all_users.select {|u| u[:name] == params[:name] }.first
       else
-        {error: { status: resp.status, message: resp.body }}.to_json
+        raise "You need :id or :name"
       end
     end
 
-    def delete(user)
-      return { error: "site_id is missing." }.to_json unless user[:site_id]
-      return { error: "user id is missing." }.to_json unless user[:id]
-
-      resp = @client.conn.delete "/api/2.0/sites/#{user[:site_id]}/users/#{user[:id]}" do |req|
-        req.headers['X-Tableau-Auth'] = @client.token if @client.token
-      end
-
-      if resp.status == 204
-        {success: 'User successfully deleted.'}.to_json
-      else
-        {errors: resp.status}.to_json
-      end
-    end
 
     private
 

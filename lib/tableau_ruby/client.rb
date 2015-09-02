@@ -1,3 +1,5 @@
+require 'logger'
+
 module Tableau
   class Client
     attr_reader :conn, :host, :admin_name, :projects, :sites, :site_id, :site_name, :token, :user, :users, :workbooks
@@ -50,12 +52,15 @@ module Tableau
       @projects  = Tableau::Project.new(self)
       @sites     = Tableau::Site.new(self)
       @workbooks = Tableau::Workbook.new(self)
+      @datasources = Tableau::Datasources.new(self)
     end
 
     def setup_connection
       @conn = Faraday.new(url: @host) do |f|
         f.request :url_encoded
-        f.response :logger
+        if ENV['FARADAY_DEBUG']
+          f.response :logger, ::Logger.new(STDOUT),bodies: true
+        end
         f.adapter Faraday.default_adapter
         f.headers['Content-Type'] = 'application/xml'
       end
@@ -66,7 +71,7 @@ module Tableau
         xml.tsRequest do
           xml.credentials(name: @admin_name, password: @admin_password) do
             xml.user(name: user) if user
-            xml.site(contentUrl: @site_name)
+            xml.site(contentUrl: (!@site_name.nil? ? @site_name : ""))
           end
         end
       end
