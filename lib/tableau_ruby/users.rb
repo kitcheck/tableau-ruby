@@ -10,7 +10,7 @@ module Tableau
     def create(options)
       site_id = options[:site_id] || @client.site_id
 
-      return { error: "name is missing." }.to_json unless options[:name]
+      return { error: "name is missing." } unless options[:name]
 
       builder = Nokogiri::XML::Builder.new do |xml|
         xml.tsRequest do
@@ -75,7 +75,7 @@ module Tableau
 
     private
 
-    def normalize_json(r, site_id, name=nil)
+    def normalize(r, site_id, name=nil)
       data = {user: {}}
       Nokogiri::XML(r).css("user").each do |u|
         data[:user] = {
@@ -88,9 +88,9 @@ module Tableau
           last_login: u['lastLogin'],
           external_auth_user_id: u['externalAuthUserId']
         }
-        return data.to_json if !name.nil? && name == u['name']
+        return data if !name.nil? && name == u['name']
       end
-      data.to_json
+      data
     end
 
   end
