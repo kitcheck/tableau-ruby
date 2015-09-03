@@ -39,17 +39,12 @@ module Tableau
 
     def create(site)
       return { error: "site name is missing." }.to_json unless site[:name]
-
+      site_hash = {}
+      #camelize
+      site.each{|key, value| site_hash[key.gsub(/(?:_|(\/))([a-z\d]*)/) { "#{$1}#{$2.capitalize}" }] = value}
       builder = Nokogiri::XML::Builder.new do |xml|
         xml.tsRequest do
-          xml.site(
-            name: site[:name] || 'New Site',
-            contentUrl: site[:url] || site[:name],
-            adminMode: site[:admin_mode] || 'ContentAndUsers',
-            userQuota: site[:user_quota] || '100',
-            storageQuota: site[:storage_quota] || '20',
-            disableSubscriptions: site[:disable_subscriptions] || false
-          )
+          xml.site(site_hash)
         end
       end
 
