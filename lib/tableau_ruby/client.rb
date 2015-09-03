@@ -2,7 +2,7 @@ require 'logger'
 
 module Tableau
   class Client
-    attr_reader :conn, :host, :admin_name, :projects, :sites, :user, :users, :workbooks
+    attr_reader :conn, :host, :admin_name, :projects, :sites, :user, :users, :workbooks, :datasources
     attr_accessor :site_id, :content_url, :token
 
     #{username, user_id, password, site}
