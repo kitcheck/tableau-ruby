@@ -41,7 +41,7 @@ module Tableau
       return { error: "site name is missing." } unless site[:name]
       site_hash = {}
       #camelize
-      site.each{|key, value| site_hash[key.gsub(/(?:_|(\/))([a-z\d]*)/) { "#{$1}#{$2.capitalize}" }] = value}
+      site.each{|key, value| site_hash[key.to_s.gsub(/(?:_|(\/))([a-z\d]*)/) { "#{$1}#{$2.capitalize}" }] = value}
       return { error: "site name is missing." } unless site[:name]
 
       builder = Nokogiri::XML::Builder.new do |xml|
@@ -55,7 +55,7 @@ module Tableau
         req.headers['X-Tableau-Auth'] = @client.token if @client.token
       end
       if resp.status == 201
-        normalize(resp.body)
+        normalize(Nokogiri::XML(resp.body).css("site").first)
       else
         {error: resp.status}
       end

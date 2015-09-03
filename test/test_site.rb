@@ -15,4 +15,15 @@ class TestSite < TableauTest
       assert sites[:sites].is_a? Array
     end
   end
+
+  def test_site_create
+    VCR.use_cassette("tableau_site_create", :erb => true) do
+      @client.token = "f3cd1af458afaf6be8c29f9477d835aa"
+      site = @client.sites.create(:name => "API_TEST_SITE", :content_url => "nuclearwar44")
+      assert_equal "API_TEST_SITE", site[:name] 
+      assert_equal "nuclearwar44", site[:content_url]
+      assert_equal "6608f694-fc4e-42a3-a478-5178296dec5d", site[:id]
+      assert_equal "Active", site[:state]
+    end
+  end
 end
