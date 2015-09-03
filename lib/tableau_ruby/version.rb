@@ -1,5 +1,5 @@
 module TableauRuby
-  VERSION = '0.1.0' unless defined?(self::VERSION)
+  VERSION = '0.1.4' unless defined?(self::VERSION)
 
   def self.version
     VERSION
