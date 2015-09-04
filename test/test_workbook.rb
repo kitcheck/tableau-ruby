@@ -49,7 +49,13 @@ class TestWorkbook < TableauTest
     VCR.use_cassette("tableau_workbook_create", :erb => true) do
       project_id = @client.projects.all[:projects].detect{|i| i[:name] == "foobartest"}[:id]
       result = @client.workbooks.create(admin_password: ENV['TABLEAU_ADMIN_PASSWORD'], admin_username: ENV['TABLEAU_ADMIN_USER'], project_id: project_id, workbook_name: "fooboy", site_id: @client.site_id, file_path: File.dirname(__FILE__) + "/TestWorkbook.twb")
-      assert_equal 201, result, "tableau workbook creation returns 201"
+      expected_result_hash = { id: "ab328f38-ff41-4707-8999-b91729784d02", 
+                               name: "TestWorkbook", content_url: "TestWorkbook",
+                               owner: {id: "cf68994e-29c8-4f41-bf6c-398e3666131e"},
+                               views: [ {id: "1826df39-d946-4b68-b1e8-5f6383cede44",
+                                         name: "Sheet 1", content_url: "TestWorkbook/sheets/Sheet1" }]
+                             }
+      assert_equal expected_result_hash, result
     end
   end
 end
