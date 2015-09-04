@@ -53,8 +53,14 @@ BODY
       end
      
       raise resp.body if resp.status > 299
-
-      return resp.status
+      Nokogiri::XML(resp.body).css("workbook").collect do |w|
+        { id: w["id"], name: w["name"], content_url: w['contentUrl'], 
+          owner: { id: w.css('owner').first['id']},
+          views: w.css('views view').collect{|v| 
+            {id: v['id'], name: v['name'], content_url: v['contentUrl']}
+          }
+        }
+      end.first
     end
 
     def all(params={})
