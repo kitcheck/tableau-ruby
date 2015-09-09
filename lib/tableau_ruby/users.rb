@@ -33,6 +33,20 @@ module Tableau
       end
     end
 
+    def delete(options)
+      site_id = options[:site_id] || @client.site_id
+
+      return { error: "user_id is missing." } unless options[:user_id]
+
+      resp = @client.conn.delete "/api/2.0/sites/#{site_id}/users/#{options[:user_id]}" do |req|
+        req.headers['X-Tableau-Auth'] = @client.token if @client.token
+      end
+
+      raise resp.body if resp.status > 299
+
+      return resp.status
+    end
+
     def all(params={})
       site_id = @client.site_id
 
