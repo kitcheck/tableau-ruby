@@ -23,4 +23,18 @@ class TestUsers < TableauTest
       assert admin_user[:id]
     end
   end
+
+  def test_user_create
+    VCR.use_cassette("tableau_user_create", :erb => true) do
+      user_id = @client.users.create(:name => "captain_lulz")
+      assert_equal "93796309-005f-480b-9b30-fbfb717b35bd", user_id
+    end
+  end
+  
+  def test_user_delete
+    VCR.use_cassette("tableau_user_delete", :erb => true) do
+      status = @client.users.delete(:user_id => "93796309-005f-480b-9b30-fbfb717b35bd")
+      assert_equal 204, status
+    end
+  end
 end
