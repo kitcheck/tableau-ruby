@@ -3,6 +3,7 @@ require 'securerandom'
 
 module Tableau
   class Workbook
+    include Util::Permissions
 
     def initialize(client)
       @client = client
@@ -141,6 +142,40 @@ BODY
       data[:image_mime_type] = "image/png"
 
       data
+    end
+
+    def add_permissions_for_user(params)
+      # params => {
+      #   :workbook_id => 'cf68994e-29c8-4f41-bf6c-398e3666131e' },
+      #   :user_id => 'cf68994e-29c8-4f41-bf6c-398e3666131e'}
+      #   :permissions => [
+      #     :allow =>  ['Read', 'ExportImage', 'ExportData'],
+      #     :deny => ['ViewComments', 'AddComment', 'Filter', 'Connect']
+      #   ]
+      # }
+      return { error: "workbook id is missing." } unless params[:workbook_id]
+      return { error: "site id is missing." } unless @client.site_id
+      return { error: "user id is missing."} unless params[:user_id]
+
+      site_id = @client.site_id
+
+      builder = Nokogiri::XML::Builder.new do |xml|
+        xml.tsRequest do
+          xml.permissions do
+            xml.workbook(id: params[:workbook_id])
+            build_permissions_for_user(xml, params)
+          end
+        end
+      end
+
+      resp = @client.conn.put "/api/2.0/sites/#{site_id}/workbooks/#{params[:workbook_id]}/permissions" do |req|
+        req.body = builder.to_xml
+        req.headers['X-Tableau-Auth'] = @client.token if @client.token
+      end
+
+      raise resp.body if resp.status > 299
+
+      Nokogiri::XML(resp.body)
     end
 
     private
