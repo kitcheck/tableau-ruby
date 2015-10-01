@@ -56,8 +56,15 @@ BODY
       end
 
       raise resp.body if resp.status > 299
-
-      true
+      Nokogiri::XML(resp.body).css("datasource").collect do |w|
+        { id: w["id"], name: w["name"], type: w['type'], 
+          owner: { id: w.css('owner').first['id']},
+          project: { id: w.css('project').first['id'], name: w.css('project').first['name']},
+          tags: w.css('tags tag').collect{|v|
+            {label: v['label']}
+          }
+        }
+      end.first
     end
 
     def all(params={})

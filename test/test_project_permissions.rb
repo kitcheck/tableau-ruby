@@ -2,9 +2,6 @@ require_relative 'test_helper'
 
 class TestProjectPermissions < TableauTest
   def test_project_add_permissions
-    VCR.use_cassette("tableau_setup_2", :erb => true) do
-      @client = Tableau::Client.new(host: ENV['TABLEAU_URL'], admin_name: ENV['TABLEAU_ADMIN_USER'], admin_password: ENV['TABLEAU_ADMIN_PASSWORD'])
-    end
 
     VCR.use_cassette("tableau_project_add_permissions", :erb => true) do
       params = {
