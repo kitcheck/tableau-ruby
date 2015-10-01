@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: put
-    uri: <%=ENV['TABLEAU_URL']%>/api/2.0/sites/b4126fe9-d7ee-4083-88f9-a5eea1f40416/projects/dfcab774-fc18-45ce-b534-05587c283801/permissions
+    uri: <%=ENV['TABLEAU_URL']%>/api/2.0/sites/b4126fe9-d7ee-4083-88f9-a56661f40416/projects/dfcab774-fc18-45ce-b534-05587c283801/permissions
     body:
       encoding: UTF-8
       string: |
