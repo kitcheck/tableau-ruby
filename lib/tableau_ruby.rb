@@ -4,6 +4,7 @@ require 'nokogiri'
 require 'faraday'
 
 require 'tableau_ruby/util/configuration'
+require 'tableau_ruby/util/permissions'
 
 Dir[File.dirname(__FILE__) + '/tableau_ruby/*.rb'].each do |file|
   require file

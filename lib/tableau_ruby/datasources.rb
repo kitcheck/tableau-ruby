@@ -4,6 +4,7 @@ require 'securerandom'
 
 module Tableau
   class Datasources
+    include Util::Permissions
 
     def initialize(client)
       @client = client
@@ -53,7 +54,7 @@ BODY
         req.headers['X-Tableau-Auth'] = @client.token if @client.token
         req.body = multipart_body
       end
-     
+
       raise resp.body if resp.status > 299
 
       true
@@ -98,6 +99,40 @@ BODY
       elsif params[:id]
         return all_ds[:datasources].select {|x| x[:id] == params[:id]}.first
       end
+    end
+
+    def add_permissions_for_user(params)
+      # params => {
+      #   :datasource_id => 'cf68994e-29c8-4f41-bf6c-398e3666131e' },
+      #   :user_id => 'cf68994e-29c8-4f41-bf6c-398e3666131e'}
+      #   :permissions => [
+      #     :allow =>  ['Read', 'ExportImage', 'ExportData'],
+      #     :deny => ['ViewComments', 'AddComment', 'Filter', 'Connect']
+      #   ]
+      # }
+      return { error: "datasource id is missing." } unless params[:datasource_id]
+      return { error: "site id is missing." } unless @client.site_id
+      return { error: "user id is missing."} unless params[:user_id]
+
+      site_id = @client.site_id
+
+      builder = Nokogiri::XML::Builder.new do |xml|
+        xml.tsRequest do
+          xml.permissions do
+            xml.datasource(id: params[:datasource_id])
+            build_permissions_for_user(xml, params)
+          end
+        end
+      end
+
+      resp = @client.conn.put "/api/2.0/sites/#{site_id}/datasources/#{params[:datasource_id]}/permissions" do |req|
+        req.body = builder.to_xml
+        req.headers['X-Tableau-Auth'] = @client.token if @client.token
+      end
+
+      raise resp.body if resp.status > 299
+
+      Nokogiri::XML(resp.body)
     end
   end
 end
