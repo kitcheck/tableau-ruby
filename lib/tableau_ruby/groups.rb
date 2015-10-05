@@ -16,7 +16,7 @@ module Tableau
     end
 
     def all_users_group
-      all[:groups].select{|group| group[:name] == "All Users"}.first
+      all[:groups].detect{|group| group[:name] == "All Users"}
     end
   end
 end
