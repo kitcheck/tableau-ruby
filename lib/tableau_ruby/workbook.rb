@@ -14,14 +14,21 @@ module Tableau
       db_user = params[:db_user]
       db_pass = params[:db_pass]
 
-      raise "Missing workbook file!" unless params[:file_path]
+      raise "Missing workbook file!" unless params[:file_path] || 
+          (params[:file] && params[:file][:name] && params[:file][:data])
       raise "Missing project id" unless params[:project_id]
 
-      workbook_file = params[:file_path].split("/").last 
+      if params[:file]
+        filename = params[:file][:name]
+        filedata = params[:file][:data]
+      else
+        filename = params[:file_path].split("/").last 
+        filedata = File.read(params[:file_path])
+      end
 
       builder = Nokogiri::XML::Builder.new do |xml|
         xml.tsRequest do
-          xml.workbook(name: workbook_file.gsub(".twb", "")) do
+          xml.workbook(name: filename.gsub(".twb", "")) do
             xml.connectionCredentials(name: db_user, password: db_pass) if !db_user.nil? && !db_pass.nil?
             xml.project(id: params[:project_id])
           end
@@ -36,10 +43,10 @@ Content-Type: text/xml
 
 #{payload}
 --boundary-string
-Content-Disposition: name="tableau_workbook"; filename="#{workbook_file}"
+Content-Disposition: name="tableau_workbook"; filename="#{filename}"
 Content-Type: application/octet-stream
 
-#{File.read(params[:file_path])}
+#{filedata}
 --boundary-string--
 BODY
 
