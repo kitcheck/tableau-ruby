@@ -10,6 +10,16 @@ module Tableau
           end
         end
       end
+
+      def build_permissions_for_group(xml, params)
+        xml.granteeCapabilities do
+          xml.group(id: params[:group_id])
+          xml.capabilities do
+            params[:permissions][:allow].each { |c| xml.capability(name: c, mode: 'Allow') }
+            params[:permissions][:deny].each  { |c| xml.capability(name: c, mode: 'Deny') }
+          end
+        end
+      end
     end
   end
 end

@@ -53,9 +53,9 @@ http_interactions:
       string: |
         <?xml version="1.0" encoding="UTF-8"?>
         <tsResponse xmlns="http://tableausoftware.com/api" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tableausoftware.com/api http://tableausoftware.com/api/ts-api-2.0.xsd">
-          <site id="b4126fe9-d7ee-4083-88f9-a56661f40416" name="Default" contentUrl="" adminMode="ContentAndUsers" disableSubscriptions="false" state="Active">
+          <site id="<%=ENV['TABLEAU_DEFAULT_SITE']%>" name="Default" contentUrl="" adminMode="ContentAndUsers" disableSubscriptions="false" state="Active">
           </site>
         </tsResponse>
-    http_version: 
+    http_version:
   recorded_at: Wed, 02 Sep 2015 16:34:20 GMT
 recorded_with: VCR 2.9.3

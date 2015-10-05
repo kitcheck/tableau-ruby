@@ -58,11 +58,11 @@ http_interactions:
         <?xml version="1.0" encoding="UTF-8"?>
         <tsResponse xmlns="http://tableausoftware.com/api" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tableausoftware.com/api http://tableausoftware.com/api/ts-api-2.0.xsd">
           <credentials token="b76cf89c9c1e4616fc388d95601f3793">
-            <site id="b4126fe9-d7ee-4083-88f9-a56661f40416" contentUrl=""/>
+            <site id="<%=ENV['TABLEAU_DEFAULT_SITE']%>" contentUrl=""/>
             <user id="cf68994e-29c8-4f41-bf6c-398e3666131e"/>
           </credentials>
         </tsResponse>
-    http_version: 
+    http_version:
   recorded_at: Wed, 02 Sep 2015 16:34:19 GMT
 - request:
     method: get
@@ -119,10 +119,10 @@ http_interactions:
         <tsResponse xmlns="http://tableausoftware.com/api" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tableausoftware.com/api http://tableausoftware.com/api/ts-api-2.0.xsd">
           <pagination pageNumber="1" pageSize="100" totalAvailable="5"/>
           <sites>
-            <site id="b4126fe9-d7ee-4083-88f9-a56661f40416" name="Default" contentUrl="" adminMode="ContentAndUsers" state="Active"/>
+            <site id="<%=ENV['TABLEAU_DEFAULT_SITE']%>" name="Default" contentUrl="" adminMode="ContentAndUsers" state="Active"/>
           </sites>
         </tsResponse>
-    http_version: 
+    http_version:
   recorded_at: Wed, 02 Sep 2015 16:34:19 GMT
 - request:
     method: get
@@ -177,14 +177,14 @@ http_interactions:
       string: |
         <?xml version="1.0" encoding="UTF-8"?>
         <tsResponse xmlns="http://tableausoftware.com/api" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tableausoftware.com/api http://tableausoftware.com/api/ts-api-2.0.xsd">
-          <site id="b4126fe9-d7ee-4083-88f9-a56661f40416" name="Default" contentUrl="" adminMode="ContentAndUsers" disableSubscriptions="false" state="Active">
+          <site id="<%=ENV['TABLEAU_DEFAULT_SITE']%>" name="Default" contentUrl="" adminMode="ContentAndUsers" disableSubscriptions="false" state="Active">
           </site>
         </tsResponse>
-    http_version: 
+    http_version:
   recorded_at: Wed, 02 Sep 2015 16:34:19 GMT
 - request:
     method: get
-    uri: <%=ENV['TABLEAU_URL']%>/api/2.0/sites/b4126fe9-d7ee-4083-88f9-a56661f40416/users?pageSize=1000
+    uri: <%=ENV['TABLEAU_URL']%>/api/2.0/sites/<%=ENV['TABLEAU_DEFAULT_SITE']%>/users?pageSize=1000
     body:
       encoding: US-ASCII
       string: ''
@@ -240,6 +240,6 @@ http_interactions:
             <user id="cf68994e-29c8-4f41-bf6c-398e3666131e" name="<%=ENV['TABLEAU_ADMIN_USER']%>" siteRole="ServerAdministrator" externalAuthUserId="" lastLogin="2015-09-02T16:34:20Z"/>
           </users>
         </tsResponse>
-    http_version: 
+    http_version:
   recorded_at: Wed, 02 Sep 2015 16:34:20 GMT
 recorded_with: VCR 2.9.3
