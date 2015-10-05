@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: <%=ENV['TABLEAU_URL']%>/api/2.0/sites/b4126fe9-d7ee-4083-88f9-a56661f40416/users/cf68994e-29c8-4f41-bf6c-398e3666131e/workbooks?isOwner=false&pageSize=1000
+    uri: <%=ENV['TABLEAU_URL']%>/api/2.0/sites/<%=ENV['TABLEAU_DEFAULT_SITE']%>/users/cf68994e-29c8-4f41-bf6c-398e3666131e/workbooks?isOwner=false&pageSize=1000
     body:
       encoding: US-ASCII
       string: ''
@@ -75,11 +75,11 @@ http_interactions:
             </workbook>
           </workbooks>
         </tsResponse>
-    http_version: 
+    http_version:
   recorded_at: Wed, 02 Sep 2015 16:34:23 GMT
 - request:
     method: get
-    uri: <%=ENV['TABLEAU_URL']%>/api/2.0/sites/b4126fe9-d7ee-4083-88f9-a56661f40416/workbooks/4d7e46a3-eaa0-4e61-b949-7b3422c835ee
+    uri: <%=ENV['TABLEAU_URL']%>/api/2.0/sites/<%=ENV['TABLEAU_DEFAULT_SITE']%>/workbooks/4d7e46a3-eaa0-4e61-b949-7b3422c835ee
     body:
       encoding: US-ASCII
       string: ''
@@ -140,6 +140,6 @@ http_interactions:
             </views>
           </workbook>
         </tsResponse>
-    http_version: 
+    http_version:
   recorded_at: Wed, 02 Sep 2015 16:34:23 GMT
 recorded_with: VCR 2.9.3

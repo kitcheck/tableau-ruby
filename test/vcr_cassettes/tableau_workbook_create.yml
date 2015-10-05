@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: <%=ENV['TABLEAU_URL']%>/api/2.0/sites/b4126fe9-d7ee-4083-88f9-a56661f40416/projects
+    uri: <%=ENV['TABLEAU_URL']%>/api/2.0/sites/<%=ENV['TABLEAU_DEFAULT_SITE']%>/projects
     body:
       encoding: US-ASCII
       string: ''
@@ -61,11 +61,11 @@ http_interactions:
             <project id="dfcab774-fc18-45ce-b534-05587c283801" name="foobartest" description=""/>
           </projects>
         </tsResponse>
-    http_version: 
+    http_version:
   recorded_at: Wed, 02 Sep 2015 16:34:24 GMT
 - request:
     method: post
-    uri: <%=ENV['TABLEAU_URL']%>/api/2.0/sites/b4126fe9-d7ee-4083-88f9-a56661f40416/workbooks
+    uri: <%=ENV['TABLEAU_URL']%>/api/2.0/sites/<%=ENV['TABLEAU_DEFAULT_SITE']%>/workbooks
     body:
       encoding: UTF-8
       string: "--boundary-string\r\nContent-Disposition: name=\"request_payload\"\r\nContent-Type:
@@ -2538,6 +2538,6 @@ http_interactions:
             </views>
           </workbook>
         </tsResponse>
-    http_version: 
+    http_version:
   recorded_at: Wed, 02 Sep 2015 16:34:24 GMT
 recorded_with: VCR 2.9.3
