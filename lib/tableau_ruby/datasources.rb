@@ -16,11 +16,18 @@ module Tableau
       db_pass = params[:db_pass]
 
 
-      raise "Missing datasource file!" unless params[:file_path]
+      raise "Missing datasource file!" unless params[:file_path] || 
+          (params[:file] && params[:file][:name] && params[:file][:data])
       raise "Missing site-id" unless params[:site_id]
       raise "Missing project id" unless params[:project_id]
 
-      filename = params[:file_path].split("/").last
+      if params[:file]
+        filename = params[:file][:name]
+        filedata = params[:file][:data]
+      else
+        filename = params[:file_path].split("/").last
+        filedata = File.read(params[:file_path])
+      end
 
       builder = Nokogiri::XML::Builder.new do |xml|
         xml.tsRequest do
@@ -42,7 +49,7 @@ Content-Type: text/xml
 Content-Disposition: name="tableau_datasource"; filename="#{filename}"
 Content-Type: application/octet-stream
 
-#{File.read(params[:file_path])}
+#{filedata}
 --boundary-string--
 BODY
 
