@@ -126,7 +126,7 @@ http_interactions:
   recorded_at: Wed, 02 Sep 2015 16:34:19 GMT
 - request:
     method: get
-    uri: <%=ENV['TABLEAU_URL']%>/api/2.0/sites/?includeProjects=false&key=contentUrl
+    uri: <%=ENV['TABLEAU_URL']%>/api/2.0/sites/<%=ENV['TABLEAU_DEFAULT_SITE']%>?includeProjects=false&key=name
     body:
       encoding: US-ASCII
       string: ''
