@@ -55,6 +55,7 @@ BODY
       resp = @client.conn.post("/api/2.0/sites/#{params[:site_id]}/workbooks") do |req|
         req.options.timeout = 300 # open/read timeout sould be high...if your workbook talks to datasources, the http request can time out before its done
         req.options.open_timeout = 300
+        req.params["overwrite"] = true
         req.headers["Content-Type"] = "multipart/mixed; boundary=\"boundary-string\""
         req.headers['X-Tableau-Auth'] = @client.token if @client.token
         req.body = multipart_body
