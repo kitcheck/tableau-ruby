@@ -65,7 +65,7 @@ http_interactions:
   recorded_at: Wed, 02 Sep 2015 16:34:24 GMT
 - request:
     method: post
-    uri: <%=ENV['TABLEAU_URL']%>/api/2.0/sites/<%=ENV['TABLEAU_DEFAULT_SITE']%>/workbooks
+    uri: <%=ENV['TABLEAU_URL']%>/api/2.0/sites/<%=ENV['TABLEAU_DEFAULT_SITE']%>/workbooks?overwrite=true
     body:
       encoding: UTF-8
       string: "--boundary-string\r\nContent-Disposition: name=\"request_payload\"\r\nContent-Type:
