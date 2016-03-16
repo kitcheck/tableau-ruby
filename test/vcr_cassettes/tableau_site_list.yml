@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: <%=ENV['TABLEAU_URL']%>/api/2.0/sites?includeProjects=
+    uri: <%=ENV['TABLEAU_URL']%>/api/2.0/sites?includeProjects
     body:
       encoding: US-ASCII
       string: ''
