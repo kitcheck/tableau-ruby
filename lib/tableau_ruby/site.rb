@@ -96,7 +96,6 @@ module Tableau
       return { error: "site id is missing." } unless site[:id]
 
       resp = @client.conn.delete "/api/2.0/sites/#{site[:id]}" do |req|
-        params.each {|k,v| req.params[k] = v}
         req.headers['X-Tableau-Auth'] = @client.token if @client.token
       end
 
