@@ -26,4 +26,11 @@ class TestSite < TableauTest
       assert_equal "Active", site[:state]
     end
   end
+
+  def test_site_delete
+    VCR.use_cassette("tableau_site_delete", :erb => true) do
+      result = @client.sites.delete(:id => "6608f694-fc4e-42a3-a478-5178296dec5d")
+      assert_equal "Site successfully deleted.", result[:success]
+    end
+  end
 end
